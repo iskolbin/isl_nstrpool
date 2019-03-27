@@ -2,7 +2,7 @@
 #define ISL_NAIVE_STRING_POOL_H_
 
 /*
- isl_nstrpool.h - v0.0.1 - public domain naive string interning library
+ isl_nstrpool.h - v0.0.2 - public domain naive string interning library
                            no warranty implied; use at your own risk
 
  author: Ilya Kolbin (iskolbin@gmail.com)
@@ -26,6 +26,7 @@ typedef struct {
 } islnsp_strpool;
 
 int islnsp_add(islnsp_strpool *pool, const char *str);
+const char *islnsp_get(islnsp_strpool *pool, int id);
 void islnsp_release(islnsp_strpool *pool);
 
 #endif
@@ -68,8 +69,12 @@ int islnsp_add(islnsp_strpool *pool, const char *str) {
 	return next_string_id;
 }
 
+const char *islnsp_get(islnsp_strpool *pool, int id) {
+	return (id >= 0 && id < pool->used) ? (const char *) pool->strings[id] : NULL;
+}
+
 void islnsp_release(islnsp_strpool *pool) {
-	if (pool && pool->strings) {
+	if (pool->strings != NULL) {
 		for (int i = 0; i < pool->used; i++) {
 			free(pool->strings[i]);
 		}
